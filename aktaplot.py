@@ -2,11 +2,17 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# User settings
+show_fractions = 1  # Set to 1 to show fraction markers, 0 to hide
+line_color = "black"  # Set default line color for individual plots
+xlabel_size = 12
+ylabel_size = 12
+stacked_ticklabel_size = 16
+stacked_ylabel_size = 16
+stacked_xlabel_size = 16
+
 # Set font to Arial
 plt.rcParams['font.family'] = 'Arial'
-
-# User setting to show fractions on individual plots
-show_fractions = 1  # Set to 1 to show fraction markers, 0 to hide
 
 # To store data for combined plot
 combined_elution_volume = []
@@ -58,10 +64,10 @@ for filename in os.listdir('.'):
 
         # Plot the individual chromatogram data
         plt.figure(figsize=(10, 6))
-        plt.plot(elution_volume, uv280, label=f'{sample_name} UV280 (AU) vs Elution Volume (mL)', color="black")
+        plt.plot(elution_volume, uv280, label=f'{sample_name} UV280 (AU) vs Elution Volume (mL)', color=line_color)
         plt.title(f'{sample_name}')
-        plt.xlabel('Elution Volume (mL)', fontsize=12)
-        plt.ylabel('UV280 (mAU)', fontsize=12)
+        plt.xlabel('Elution Volume (mL)', fontsize=xlabel_size)
+        plt.ylabel('UV280 (mAU)', fontsize=ylabel_size)
 
         # If show_fractions is on, plot vertical lines for fraction markers
         if show_fractions:
@@ -97,8 +103,8 @@ for i in range(len(sorted_labels)):
 
 # Customize the combined plot
 plt.title('Comparison of SEC Chromatograms')
-plt.xlabel('Elution Volume (mL)', fontsize=12)
-plt.ylabel('UV280 (mAU)', fontsize=12)
+plt.xlabel('Elution Volume (mL)', fontsize=xlabel_size)
+plt.ylabel('UV280 (mAU)', fontsize=ylabel_size)
 plt.legend()
 
 # Save the combined plot as a PNG file
@@ -108,19 +114,30 @@ plt.close()
 
 # Stacked subplot (now sorted)
 num_samples = len(sorted_labels)
-fig, axs = plt.subplots(num_samples, 1, figsize=(10, 2*num_samples), sharex=True)
 
-for i in range(num_samples):
-    axs[i].plot(sorted_elution_volume[i], sorted_uv280[i], label=f'{sorted_labels[i]}', color='black')
-    axs[i].set_ylabel('UV280 (mAU)', fontsize=16)
-    axs[i].legend(loc="upper right", fontsize=20, handlelength=0, handletextpad=0)  # Hide the black line in the legend
-    axs[i].set_ylim(0, 2100)
-    axs[i].set_xlim(0, 120)
-    axs[i].tick_params(axis='x', labelsize=16)  # Increase x-tick font size
-    axs[i].tick_params(axis='y', labelsize=16)  # Increase y-tick font size
+# Handle case where there is only one sample
+if num_samples == 1:
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(sorted_elution_volume[0], sorted_uv280[0], label=f'{sorted_labels[0]}', color=line_color)
+    ax.set_ylabel('UV280 (mAU)', fontsize=stacked_ylabel_size)
+    ax.legend(loc="upper right", fontsize=20, handlelength=0, handletextpad=0)  # Hide the black line in the legend
+    ax.set_ylim(0, 2100)
+    ax.set_xlim(0, 120)
+    ax.tick_params(axis='x', labelsize=stacked_ticklabel_size)  # Increase x-tick font size
+    ax.tick_params(axis='y', labelsize=stacked_ticklabel_size)  # Increase y-tick font size
+    plt.xlabel('Elution Volume (mL)', fontsize=stacked_xlabel_size)
 
-# Label the common x-axis
-plt.xlabel('Elution Volume (mL)', fontsize=24)
+else:
+    fig, axs = plt.subplots(num_samples, 1, figsize=(10, 2*num_samples), sharex=True)
+    for i in range(num_samples):
+        axs[i].plot(sorted_elution_volume[i], sorted_uv280[i], label=f'{sorted_labels[i]}', color=line_color)
+        axs[i].set_ylabel('UV280 (mAU)', fontsize=stacked_ylabel_size)
+        axs[i].legend(loc="upper right", fontsize=20, handlelength=0, handletextpad=0)  # Hide the black line in the legend
+        axs[i].set_ylim(0, 2100)
+        axs[i].set_xlim(0, 120)
+        axs[i].tick_params(axis='x', labelsize=stacked_ticklabel_size)  # Increase x-tick font size
+        axs[i].tick_params(axis='y', labelsize=stacked_ticklabel_size)  # Increase y-tick font size
+    plt.xlabel('Elution Volume (mL)', fontsize=stacked_xlabel_size)
 
 # Adjust layout so titles/labels don't overlap
 plt.tight_layout(rect=[0, 0, 1, 0.96])
