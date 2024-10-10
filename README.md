@@ -25,7 +25,7 @@ You can install the necessary libraries using pip:
 
 Clone this repository to your local machine:
 
-```git clone https://github.com/yourusername/AKTAplot.git```
+```git clone https://github.com/jkaczmarski/AKTAplot.git```
 
 ### 2. Prepare Your Data
 
@@ -56,6 +56,9 @@ The script can be customized by adjusting variables within the script:
 - Stacked plots of multiple chromatograms are saved as Stacked_UV280_vs_ElutionVolume.png.
 
 ## Example
+
+**Input**
+Example of input csv file exported from Unicorn software is provided: [H2.csv](/H2.csv)
 
 Here’s an example of how the outputs will look: 
 
